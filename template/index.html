@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Detector Demo</title>
+    <!-- Подключение стилей PicoCSS -->
+    <link rel="stylesheet" type="text/css" href="/static/pico.min.css">
+    <style>
+        :root {
+            --primary: #8e24aa;
+        }
+        /*.container {*/
+        /*    max-width: 800px;*/
+        /*    margin-top: 50px;*/
+        /*}*/
+
+        .image-result-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px; /* С небольшим отступом между блоками */
+        }
+
+        .image-container,
+        .result-container {
+            flex-basis: calc(50% - 10px); /* Вычет отступа */
+            height: 500px;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background-color: #f6f6f6;
+        }
+
+        .img-placeholder {
+            max-width: 100%;
+            max-height: 100%;
+            opacity: 0.5;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .json-key {
+            color: brown;
+        }
+
+        .json-value {
+            color: navy;
+        }
+
+        .json-string {
+            color: olive;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <nav class="container-fluid">
+        <ul>
+<!--            <li><strong></strong></li>-->
+        </ul>
+        <ul>
+            <li><a href="/" class="secondary">Загрузить</a></li>
+<!--            <li><a href="/history">История</a></li>-->
+        </ul>
+    </nav>
+
+    <header class="container">
+        <hgroup>
+            <h1></h1>
+            <h2>Card Detector v{{ .Version }}</h2>
+        </hgroup>
+    </header>
+</div>
+
+<main class="container">
+
+
+    <div class="image-result-container">
+        <div class="image-container">
+            <img id="image-view" class="img-fluid rounded img-placeholder"
+                 src="./static/photo.png"
+                 alt="Предварительный просмотр">
+        </div>
+
+
+        <div class="result-container">
+            <pre id="result"></pre>
+        </div>
+
+    </div>
+
+    <!-- File browser -->
+    <label for="image-upload">
+        <input type="file" id="image-upload" name="file" accept="image/*">
+    </label>
+
+</main>
+
+<script>
+    // Обработчик события выбора изображения
+    document.getElementById('image-upload').addEventListener('change', function (e) {
+        var reader = new FileReader();
+
+        reader.onload = function (event) {
+            showResult('Loading...');
+            var img = document.getElementById('image-view');
+            img.setAttribute('src', event.target.result);
+
+            // Отправка изображения на сервер
+            var formData = new FormData();
+            formData.append('image', e.target.files[0]);
+
+            var request = new XMLHttpRequest();
+            request.open('POST', '/detect', true);
+            request.onreadystatechange = function () {
+                if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
+                    // Получение и отображение результата в формате JSON
+                    var result = JSON.parse(request.responseText);
+                    showResult(result);
+                }
+            };
+            request.send(formData);
+        }
+
+        reader.readAsDataURL(e.target.files[0]);
+    });
+
+    // Функция для красивого отображения результата JSON
+    function showResult(result) {
+        var resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = syntaxHighlight(JSON.stringify(result, null, 2));
+    }
+
+    // Функция для подсветки синтаксиса JSON
+    function syntaxHighlight(json) {
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|true|false|null|-?\d+(?:\.\d*)(?:[eE][+-]?\d+)?)/g, function (match) {
+            var cls = 'json-value';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'json-key';
+                } else {
+                    cls = 'json-string';
+                }
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
+</script>
+</body>
+
+</html>

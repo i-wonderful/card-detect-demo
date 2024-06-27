@@ -1,0 +1,7 @@
+name: card-detect-demo
+version: 1.0.0
+
+port: 8080
+
+tmp_folder: ./tmp
+storage_folder: ./storage
