@@ -1,7 +1,8 @@
 package file_upload
 
 import (
-	"fmt"
+	"card-detect-demo/internal/model"
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
@@ -9,8 +10,13 @@ import (
 	"time"
 )
 
+type Response struct {
+	Boxes []model.Box `json:"boxes"`
+	Img   string      `json:"img"`
+}
+
 type Detector interface {
-	Detect(pathImg string) error
+	Detect(pathImg string) ([]model.Box, string, error)
 }
 
 type FileUploadHandler struct {
@@ -61,7 +67,7 @@ func (h *FileUploadHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	io.Copy(f, file)
 
 	/*person,*/
-	err = h.detector.Detect(fileName)
+	boxes, path, err := h.detector.Detect(fileName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -69,9 +75,13 @@ func (h *FileUploadHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	// todo
-	//json.NewEncoder(w).Encode(person)
+
+	resp := Response{
+		Boxes: boxes,
+		Img:   path,
+	}
+	json.NewEncoder(w).Encode(resp)
 
 	duration := time.Since(start)
-	fmt.Printf(">>> [Time] %s took %v\n", "Full detection", duration)
+	log.Printf(">>> [Time] %s took %v\n", "Full detection", duration)
 }

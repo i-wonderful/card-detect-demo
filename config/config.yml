@@ -1,5 +1,5 @@
-name: card-detect-demo
-version: 1.0.0
+name: Card detect demo
+version: 1.1.0
 
 port: 8080
 
@@ -9,3 +9,5 @@ storage_folder: ./storage
 onnx:
   path_runtime: ./lib/onnx_18/libonnxruntime.so
   path_model: ./models/yolov8-skype-detect.onnx
+
+is_log_time: true

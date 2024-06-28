@@ -22,7 +22,7 @@ type Config struct {
 		PathModel   string `yaml:"path_model"`
 	}
 
-	IsLogTime bool
+	IsLogTime bool `yaml:"is_log_time" default:"true"`
 }
 
 func NewConfigFromYml() (*Config, error) {

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Detector Demo</title>
-    <!-- Подключение стилей PicoCSS -->
     <link rel="stylesheet" type="text/css" href="/static/pico.min.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="./static/business_card.svg">
     <style>
         :root {
             --primary: #8e24aa;
@@ -26,7 +26,7 @@
         .image-container,
         .result-container {
             flex-basis: calc(50% - 10px); /* Вычет отступа */
-            height: 500px;
+            height: 600px;
             border: 1px solid #ccc;
             display: flex;
             justify-content: center;
@@ -64,25 +64,21 @@
 <div>
     <nav class="container-fluid">
         <ul>
-<!--            <li><strong></strong></li>-->
+            <li><strong></strong></li>
         </ul>
         <ul>
-            <li><a href="/" class="secondary">Загрузить</a></li>
-<!--            <li><a href="/history">История</a></li>-->
+<!--            <li><a href="/" class="secondary">Загрузить</a></li>-->
         </ul>
     </nav>
 
     <header class="container">
         <hgroup>
-            <h1></h1>
-            <h2>Card Detector v{{ .Version }}</h2>
+            <h1>{{ .Name }} v{{ .Version }}</h1>
         </hgroup>
     </header>
 </div>
 
 <main class="container">
-
-
     <div class="image-result-container">
         <div class="image-container">
             <img id="image-view" class="img-fluid rounded img-placeholder"
@@ -90,11 +86,9 @@
                  alt="Предварительный просмотр">
         </div>
 
-
         <div class="result-container">
             <pre id="result"></pre>
         </div>
-
     </div>
 
     <!-- File browser -->
@@ -124,7 +118,8 @@
                 if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
                     // Получение и отображение результата в формате JSON
                     var result = JSON.parse(request.responseText);
-                    showResult(result);
+                    showResult(result['boxes']);
+                    replaceImg(result['img'])
                 }
             };
             request.send(formData);
@@ -153,6 +148,12 @@
             }
             return '<span class="' + cls + '">' + match + '</span>';
         });
+    }
+
+    // Замена изображения
+    function replaceImg(imgPath) {
+        var img = document.getElementById('image-view');
+        img.setAttribute('src', imgPath);
     }
 </script>
 </body>

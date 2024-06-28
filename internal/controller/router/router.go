@@ -6,19 +6,16 @@ import (
 	"net/http"
 )
 
-func NewRouter(detectService file_upload.Detector, tmpFilePath, version string) *http.ServeMux {
-	// Создаем файловый сервер, который будет использовать директорию "./template/static"
-	fs := http.FileServer(http.Dir("./template/static"))
-
-	// Создаем ServeMux, который будет маршрутизировать запросы
+func NewRouter(detectService file_upload.Detector, tmpFilePath, name, version string) *http.ServeMux {
 	mux := http.NewServeMux()
 
-	// Правильно указываем паттерн и убираем префикс
-	mux.Handle("/static/", http.StripPrefix("/static/", fs))
-	fsStorage := http.FileServer(http.Dir("./storage"))
-	mux.Handle("/storage/", http.StripPrefix("/storage/", fsStorage))
+	// Создаем файловый сервер, который будет использовать директорию "./template/static"
+	staticStorage := http.FileServer(http.Dir("./template/static"))
+	mux.Handle("/static/", http.StripPrefix("/static/", staticStorage))
+	fileStorage := http.FileServer(http.Dir("./storage"))
+	mux.Handle("/storage/", http.StripPrefix("/storage/", fileStorage))
 
-	indexHandler := index.NewIndexHandler(version)
+	indexHandler := index.NewIndexHandler(name, version)
 	uploadHandler := file_upload.NewFileUploadHandler(detectService, tmpFilePath)
 
 	mux.HandleFunc("/", indexHandler.Handle)

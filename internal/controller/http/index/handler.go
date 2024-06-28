@@ -6,24 +6,26 @@ import (
 	"net/http"
 )
 
-// Создаем структуру данных для передачи в шаблон
-type MyData struct {
+type projectInfo struct {
+	Name    string
 	Version string
 }
 
-type IndexHandler struct {
+type Handler struct {
+	name    string
 	version string
 }
 
-func NewIndexHandler(version string) *IndexHandler {
-	return &IndexHandler{
+func NewIndexHandler(name, version string) *Handler {
+	return &Handler{
+		name:    name,
 		version: version,
 	}
 }
 
-func (h *IndexHandler) Handle(w http.ResponseWriter, r *http.Request) {
-	// Создаем объект данных для шаблона
-	data := MyData{
+func (h *Handler) Handle(w http.ResponseWriter, r *http.Request) {
+	data := projectInfo{
+		Name:    h.name,
 		Version: h.version,
 	}
 

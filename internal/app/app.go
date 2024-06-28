@@ -33,10 +33,10 @@ func (a *app) Run() error {
 		log.Println(err)
 		return err
 	}
-	detectService := service.NewDetector(onnxRecognizer, a.config.IsLogTime)
+	detectService := service.NewDetector(onnxRecognizer, a.config.StorageFolder, a.config.IsLogTime)
 
 	// handlers
-	h := router.NewRouter(detectService, a.config.StorageFolder, a.config.Version)
+	h := router.NewRouter(detectService, a.config.StorageFolder, a.config.Name, a.config.Version)
 
 	// start server
 	srv := &http.Server{
