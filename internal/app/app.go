@@ -1,8 +1,6 @@
 package app
 
 import (
-	"card-detect-demo/internal/controller/router"
-	"card-detect-demo/internal/service"
 	"context"
 	"fmt"
 	"log"
@@ -11,6 +9,10 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"card-detect-demo/internal/controller/router"
+	"card-detect-demo/internal/service"
+	"card-detect-demo/internal/service/onnx"
 )
 
 type app struct {
@@ -26,7 +28,12 @@ func NewApp(config *Config) *app {
 func (a *app) Run() error {
 
 	// services
-	detectService := service.NewDetector()
+	onnxRecognizer, err := onnx.NewService(a.config.Onnx.PathRuntime, a.config.Onnx.PathModel, a.config.IsLogTime)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	detectService := service.NewDetector(onnxRecognizer, a.config.IsLogTime)
 
 	// handlers
 	h := router.NewRouter(detectService, a.config.StorageFolder, a.config.Version)

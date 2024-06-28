@@ -16,6 +16,13 @@ type Config struct {
 
 	TempFolder    string `yaml:"tmp_folder" default:"./tmp"`
 	StorageFolder string `yaml:"storage_folder" default:"./storage"`
+
+	Onnx struct {
+		PathRuntime string `yaml:"path_runtime"`
+		PathModel   string `yaml:"path_model"`
+	}
+
+	IsLogTime bool
 }
 
 func NewConfigFromYml() (*Config, error) {
