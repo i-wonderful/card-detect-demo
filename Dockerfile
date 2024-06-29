@@ -5,7 +5,8 @@ WORKDIR /app
 # Установка зависимостей для CGO
 RUN apt-get update && apt-get install -y gcc
 
-COPY go.mod go.sum ./
+COPY go.mod ./
+RUN go mod tidy
 RUN go mod download
 
 COPY . .
