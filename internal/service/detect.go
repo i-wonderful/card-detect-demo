@@ -33,7 +33,7 @@ func (d *Detector) Detect(imgPath string) ([]model.Box, string, error) {
 	if d.isLogTime {
 		start := time.Now()
 		defer func() {
-			log.Printf(">>> Time detect: %s", time.Since(start))
+			log.Printf(">>> Time full detect: %s", time.Since(start))
 		}()
 	}
 
@@ -54,6 +54,11 @@ func (d *Detector) Detect(imgPath string) ([]model.Box, string, error) {
 // drawBoxes - рисует боксы на изображении
 // @return путь к сохраненному изображению
 func drawBoxes(im image.Image, boxes []model.Box, pathStorage string) string {
+	start := time.Now()
+	defer func() {
+		log.Printf(">>> Time drawBoxes: %s", time.Since(start))
+	}()
+
 	bounds := im.Bounds()
 	rgba := image.NewRGBA(bounds)
 	draw.Draw(rgba, bounds, im, bounds.Min, draw.Src)

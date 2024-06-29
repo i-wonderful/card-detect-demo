@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 )
 
 type Response struct {
@@ -34,8 +33,6 @@ func NewFileUploadHandler(detector Detector, dirTmpPath string) *FileUploadHandl
 }
 
 func (h *FileUploadHandler) Handle(w http.ResponseWriter, r *http.Request) {
-	start := time.Now()
-
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -66,7 +63,6 @@ func (h *FileUploadHandler) Handle(w http.ResponseWriter, r *http.Request) {
 
 	io.Copy(f, file)
 
-	/*person,*/
 	boxes, path, err := h.detector.Detect(fileName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -81,7 +77,4 @@ func (h *FileUploadHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		Img:   path,
 	}
 	json.NewEncoder(w).Encode(resp)
-
-	duration := time.Since(start)
-	log.Printf(">>> [Time] %s took %v\n", "Full detection", duration)
 }
