@@ -8,6 +8,6 @@ storage_folder: ./storage
 
 onnx:
   path_runtime: ./lib/onnx_18/libonnxruntime.so
-  path_model: ./models/yolov8-skype-detect.onnx
+  path_model: ./models/yolov8m-card-detect.onnx
 
 is_log_time: true

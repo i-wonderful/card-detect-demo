@@ -20,7 +20,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
-            gap: 20px; /* С небольшим отступом между блоками */
+            gap: 10px; /* С небольшим отступом между блоками */
         }
 
         .image-container,
@@ -73,12 +73,17 @@
 
     <header class="container">
         <hgroup>
-            <h1>{{ .Name }} v{{ .Version }}</h1>
+            <h2>{{ .Name }} v{{ .Version }}</h2>
+            <h3>Демонстрация работы модели onnx в сервисе golang.</h3>
         </hgroup>
     </header>
 </div>
 
 <main class="container">
+    <label for="image-upload">
+        <input type="file" id="image-upload" name="file" accept="image/*">
+    </label>
+
     <div class="image-result-container">
         <div class="image-container">
             <img id="image-view" class="img-fluid rounded img-placeholder"
@@ -91,10 +96,7 @@
         </div>
     </div>
 
-    <!-- File browser -->
-    <label for="image-upload">
-        <input type="file" id="image-upload" name="file" accept="image/*">
-    </label>
+
 
 </main>
 
