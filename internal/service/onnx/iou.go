@@ -4,7 +4,10 @@ import "math"
 
 // iou calculates the IoU between two boxes.
 func iou(box1, box2 box) float64 {
-	return intersection(box1, box2) / union(box1, box2)
+	intersectionArea := intersection(box1, box2)
+	unionArea := union(box1, box2)
+	iouValue := intersectionArea / unionArea
+	return iouValue
 }
 
 func union(box1, box2 box) float64 {

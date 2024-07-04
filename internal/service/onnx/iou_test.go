@@ -5,8 +5,6 @@ import (
 	"testing"
 )
 
-const CLASS_CARD = "card"
-
 func TestIoU(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -37,6 +35,12 @@ func TestIoU(t *testing.T) {
 			box1:     box{0.0, 0.0, 2.0, 2.0, CLASS_CARD, 0.7},
 			box2:     box{0.5, 0.5, 1.5, 1.5, CLASS_CARD, 0.7},
 			expected: 0.25,
+		},
+		{
+			name:     "Two boxes",
+			box2:     box{229.69752502441406, 274.3142395019531, 685.3692016601562, 640.3749389648438, CLASS_CARD, 0.8600912},
+			box1:     box{238.20684814453125, 64.40509033203125, 689.7849731445312, 592.3435668945312, CLASS_CARD, 0.8638421},
+			expected: 0.540728921545655,
 		},
 	}
 

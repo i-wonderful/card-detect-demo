@@ -1,14 +1,16 @@
 package service
 
 import (
-	"card-detect-demo/internal/model"
-	"card-detect-demo/internal/util/img"
 	"github.com/google/uuid"
 	"image"
 	"image/color"
 	"image/draw"
 	"log"
 	"time"
+
+	"card-detect-demo/internal/model"
+	. "card-detect-demo/internal/util/boxes"
+	"card-detect-demo/internal/util/img"
 )
 
 type Recognizer interface {
@@ -46,6 +48,7 @@ func (d *Detector) Detect(imgPath string) ([]model.Box, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
+	boxes = MergeCardBoxes(boxes)
 
 	outputImgPath := drawBoxes(im, boxes, d.pathStorage)
 	return boxes, outputImgPath, nil

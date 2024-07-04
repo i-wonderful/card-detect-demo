@@ -16,7 +16,7 @@ const IMG_SIZE = 640
 const COUNT_CLASSES = 9
 
 // const CLASS_CARD = "text"
-// const CLASS_CARD = "card"
+const CLASS_CARD = "card"
 const IOU_LIMIT = 0.8 // 0.8
 const PROB_MIN = 0.4  // 0.5
 var yolo_classes = []string{"card", "location", "logo", "mail", "phone", "skype", "telegram", "web", "whatsapp"}
@@ -209,14 +209,4 @@ func nmsFilter(boxes []box) []box {
 		}
 	}
 	return result
-}
-
-// -------------- IoU ----------------
-
-func get10Percent(v float64) float64 {
-	return v * 0.1
-}
-
-func get20Percent(v float64) float64 {
-	return v * 0.2
 }
