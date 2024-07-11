@@ -34,11 +34,11 @@ type FindTextService struct {
 }
 
 func NewService(pathToOnnxRuntime string, pathToModel string, isLogTime bool) (*FindTextService, error) {
-	if manage_file.FileExists(pathToOnnxRuntime) == false {
+	if !manage_file.FileExists(pathToOnnxRuntime) {
 		return nil, fmt.Errorf("file onnxruntime not found: %s", pathToOnnxRuntime)
 	}
 
-	if manage_file.FileExists(pathToModel) == false {
+	if !manage_file.FileExists(pathToModel) {
 		return nil, fmt.Errorf("file model not found: %s", pathToModel)
 	}
 
@@ -75,16 +75,6 @@ func (s *FindTextService) PredictBoxCoord(img image.Image) ([]model.Box, error) 
 
 		h := y2 - y1
 		w := x2 - x1
-
-		// борьба с наклонами.
-		// прибавка по высоте
-		//hAdd := get10Percent(h)
-		//y1 = y1 - hAdd
-		//h += 2 * hAdd
-		// прибавка по ширине
-		//wAdd := get20Percent(h)
-		//x1 = x1 - wAdd
-		//w += 2 * wAdd
 
 		prediction := model.Box{X: int(x1), Y: int(y1), Width: int(w), Height: int(h), Label: p.label}
 		result = append(result, prediction)
@@ -138,6 +128,7 @@ func runModel(pathToModel string, input []float32) []float32 {
 	inputTensor, _ := ort.NewTensor(inputShape, input)
 
 	outputShape := ort.NewShape(1, 4+COUNT_CLASSES, 8400) // todo 84 ?
+	//outputShape := ort.NewShape(1, 300, 6) //  (1, 300, 6) yolov10
 	outputTensor, _ := ort.NewEmptyTensor[float32](outputShape)
 
 	model, _ := ort.NewSession[float32](pathToModel,

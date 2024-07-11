@@ -61,7 +61,11 @@ func (h *FileUploadHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 	defer f.Close()
 
-	io.Copy(f, file)
+	_, err = io.Copy(f, file)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	boxes, path, err := h.detector.Detect(fileName)
 	if err != nil {
@@ -76,5 +80,8 @@ func (h *FileUploadHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		Boxes: boxes,
 		Img:   path,
 	}
-	json.NewEncoder(w).Encode(resp)
+	if err = json.NewEncoder(w).Encode(resp); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

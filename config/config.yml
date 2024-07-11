@@ -1,5 +1,5 @@
 name: Card detect demo
-version: 1.1.0
+version: 1.2.0
 
 port: 8080
 
@@ -8,6 +8,6 @@ storage_folder: ./storage
 
 onnx:
   path_runtime: ./lib/onnx_18/libonnxruntime.so
-  path_model: ./models/yolov8m-card-detect.onnx
+  path_model: ./models/yolov8m-card-detect-60.onnx
 
 is_log_time: true

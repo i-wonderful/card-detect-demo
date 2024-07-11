@@ -68,11 +68,15 @@ func drawBoxes(im image.Image, boxes []model.Box, pathStorage string) string {
 
 	for _, box := range boxes {
 		rect := image.Rect(box.X, box.Y, box.X+box.Width, box.Y+box.Height)
-		img.DrawBox(rgba, rect, color.RGBA{255, 0, 0, 255}, 2, box.Label)
+		img.DrawBox(rgba, rect, color.RGBA{255, 0, 0, 255}, 3, box.Label)
 	}
 
-	outputFilePath := pathStorage + "/" + uuid.New().String() + ".png"
-	img.SaveNRGBA(rgba, outputFilePath)
+	outputFilePath := pathStorage + "/boxes_" + uuid.New().String() + ".png"
+	err := img.SaveNRGBA(rgba, outputFilePath)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
 
 	return outputFilePath
 }
